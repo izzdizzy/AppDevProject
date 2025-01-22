@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Update eBook{% endblock %}
+
+{% block content %}
+<h1 class="display-4">Update eBook</h1>
+
+<form action="" method="POST">
+  <div class="mb-3">
+    <label for="title" class="form-label">Title</label>
+    <input type="text" class="form-control" id="title" name="title" value="{{ ebook['title'] }}" required>
+  </div>
+  <div class="mb-3">
+    <label for="author" class="form-label">Author</label>
+    <input type="text" class="form-control" id="author" name="author" value="{{ ebook['author'] }}" required>
+  </div>
+  <div class="mb-3">
+    <label for="description" class="form-label">Description</label>
+    <textarea class="form-control" id="description" name="description" rows="3" required>{{ ebook['description'] }}</textarea>
+  </div>
+  <div class="mb-3">
+    <label for="genre" class="form-label">Genre</label>
+    <input type="text" class="form-control" id="genre" name="genre" value="{{ ebook['genre'] }}" required>
+  </div>
+  <div class="mb-3">
+    <label for="price" class="form-label">Price</label>
+    <input type="text" class="form-control" id="price" name="price" value="{{ ebook['price'] }}" required>
+  </div>
+  <button type="submit" class="btn btn-primary">Update</button>
+  <a href="{{ url_for('retrieve_ebooks') }}" class="btn btn-secondary">Cancel</a>
+</form>
+
+{% endblock %}

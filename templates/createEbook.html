@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container">
+    <h2>Create EBook</h2>
+    <form action="/createEbook" method="POST">
+      <!-- Title -->
+      <div class="mb-3">
+        <label for="title" class="form-label">eBook Title</label>
+        <input type="text" class="form-control" id="title" name="title" required>
+      </div>
+
+      <!-- Author -->
+      <div class="mb-3">
+        <label for="author" class="form-label">Author</label>
+        <input type="text" class="form-control" id="author" name="author" required>
+      </div>
+
+      <!-- Description -->
+      <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label for="genre" class="form-label">Genre</label>
+        <input type="text" class="form-control" id="genre" name="genre" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="price" class="form-label">Price</label>
+        <input type="text" class="form-control" id="price" name="price" required>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="btn btn-primary">Create eBook</button>
+    </form>
+  </div>
+{% endblock %}

@@ -22,3 +22,4 @@ class CreateEbookForm(Form):
     description = TextAreaField('Description', [validators.Optional(), validators.Length(max=500)])
     author = StringField('Author', [validators.DataRequired(), validators.Length(min=1, max=100)])
     genre = StringField('Genre', [validators.DataRequired(), validators.Length(min=1, max=100)])
+    price = IntegerField('Price', [validators.DataRequired(), validators.NumberRange(min=1, max=100)])

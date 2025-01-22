@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Library Loan System - eBooks{% endblock %}
+
+{% block content %}
+<h1 class="display-4">Available eBooks</h1>
+
+{% if ebooks_list %}
+<div class="row">
+  {% for ebook in ebooks_list %}
+  <div class="col-12 col-md-4 mb-4">
+    <div class="card">
+      <img src="https://via.placeholder.com/150" class="card-img-top" alt="eBook Image">
+      <div class="card-body">
+        <h5 class="card-title">{{ ebook['title'] }}</h5>
+        <p class="card-text">{{ ebook['description'] }}</p>
+        <p><strong>Author:</strong> {{ ebook['author'] }}</p>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<p>No eBooks available.</p>
+{% endif %}
+
+{% endblock %}
