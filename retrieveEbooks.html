@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Library Loan System - eBooks{% endblock %}
+
+{% block content %}
+<h1 class="display-4">EBooks</h1>
+
+{% if ebooks_list %}
+    <ul class="list-group">
+        {% for ebook in ebooks_list %}
+            <li class="list-group-item">
+                <h4>{{ ebook['title'] }}</h4>
+                <p><strong>Author:</strong> {{ ebook['author'] }}</p>
+                <p><strong>Description:</strong> {{ ebook['description'] }}</p>
+                <p><strong>Genre:</strong> {{ ebook['genre'] }}</p>
+
+                <div class="d-flex justify-content-start">
+                    <!-- Update Button -->
+                    <a href="{{ url_for('update_ebook', ebook_id=ebook['ebook_id']) }}" class="btn btn-warning me-2">
+                        Update
+                    </a>
+
+                    <!-- Delete Button -->
+                    <form action="{{ url_for('delete_ebook', ebook_id=ebook['ebook_id']) }}" method="POST">
+                        <!-- Button to Open the Modal -->
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModal_{{ ebook['ebook_id'] }}">
+                            Delete
+                        </button>
+
+                        <!-- The Modal -->
+                        <div class="modal" id="myModal_{{ ebook['ebook_id'] }}">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+
+                                    <!-- Modal Header -->
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">Delete Confirmation</h4>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+
+                                    <!-- Modal body -->
+                                    <div class="modal-body">
+                                        Are you sure you want to delete "{{ ebook['title'] }}" by "{{ ebook['author'] }}"?
+                                    </div>
+
+                                    <!-- Modal footer -->
+                                    <div class="modal-footer">
+                                        <input type="submit" value="Delete" class="btn btn-danger">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No eBooks available.</p>
+{% endif %}
+
+{% endblock %}
