@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Library Loan System - Update User{% endblock %}
+
+{% block content %}
+{% from "includes/_formHelper.html" import render_field %}
+
+<h1 class="display-4">Refund</h1>
+<form method="POST" action="">
+    <!-- Name Field -->
+    <div class="form-group">
+        {{ render_field(form.name, class="form-control", placeholder="Name") }}
+    </div>
+
+    <!-- Title Field -->
+    <div class="form-group">
+        {{ render_field(form.title, class="form-control", placeholder="Title") }}
+    </div>
+
+    <!-- Amount Paid Field -->
+    <div class="form-group">
+        {{ render_field(form.amount_paid, class="form-control", placeholder="Amount Paid") }}
+    </div>
+
+    <!-- Refund Status Field -->
+    <div class="form-group">
+        <label for="refund_status">Refund Status</label>
+        <div id="refund_status">
+            <input type="radio" id="refund_yes" name="refund_status" value="Yes"
+                   {% if form.refund_status.data =="Yes" %}checked{% endif %}>
+            <label for="refund_yes">Yes</label>
+
+            <input type="radio" id="refund_no" name="refund_status" value="No"
+                   {% if form.refund_status.data =="No" %}checked{% endif %}>
+            <label for="refund_no">No</label>
+        </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div>
+        <input type="submit" value="Submit" class="btn btn-primary"/>
+    </div>
+</form>
+{% endblock %}

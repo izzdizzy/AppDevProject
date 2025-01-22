@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Library Loan System - Users{% endblock %}
+
+{% block content %}
+<h1 class="display-4">Customer Transaction History</h1>
+
+<div>
+  {% if users_list %}
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>User ID</th>
+        <th>Name</th>
+        <th>Title</th>
+        <th>Amount Paid ($)</th>
+        <th>Refund Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users_list %}
+      <tr>
+        <td>{{ user.get_user_id() }}</td>
+        <td>{{ user.get_name() }}</td>
+        <td>{{ user.get_title() }}</td>
+        <td>{{ user.get_amount_paid() }}</td>
+        <td>{{ user.get_refund_status() }}</td>
+        <td>
+          <div class="d-flex">
+            <!-- Refund Button -->
+            <form action="{{ url_for('toggle_refund', id=user.get_user_id()) }}" method="POST">
+              <button
+                type="submit"
+                class="btn {% if user.get_refund_status() == 'Refunded' %}btn-secondary{% else %}btn-primary{% endif %}"
+                {% if user.get_refund_status() =='Refunded' %}disabled{% endif %}>
+                {% if user.get_refund_status() == "Refunded" %}
+                  Refunded
+                {% else %}
+                  Refund
+                {% endif %}
+              </button>
+            </form>
+
+            <!-- Delete Button -->
+            <form action="{{ url_for('delete_user', id=user.get_user_id()) }}" method="POST" class="ms-2">
+              <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal_{{ user.get_user_id() }}">
+                Delete
+              </button>
+
+              <!-- Delete Modal -->
+              <div class="modal fade" id="deleteModal_{{ user.get_user_id() }}" tabindex="-1" aria-labelledby="deleteModalLabel_{{ user.get_user_id() }}" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="deleteModalLabel_{{ user.get_user_id() }}">Delete Confirmation</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <!-- Modal Body -->
+                    <div class="modal-body">
+                      Are you sure you want to delete "{{ user.get_name() }}"?
+                    </div>
+                    <!-- Modal Footer -->
+                    <div class="modal-footer">
+                      <input type="submit" value="Delete" class="btn btn-danger">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>No users available.</p>
+  {% endif %}
+</div>
+
+<!-- Filter and Reset Section -->
+<div>
+    <form action="{{ url_for('customerTransactionHistory') }}" method="GET">
+        <label for="user_id_filter">Filter by ID:</label>
+        <input type="text" id="user_id_filter" name="user_id_filter" placeholder="Enter ID" value="{{ request.args.get('user_id_filter', '') }}">
+
+        <label for="name_filter">Filter by Name:</label>
+        <input type="text" id="name_filter" name="name_filter" placeholder="Enter name" value="{{ request.args.get('name_filter', '') }}">
+
+        <button type="submit">Filter</button>
+        <button type="button" onclick="window.location.href='{{ url_for('customerTransactionHistory') }}';">Reset</button>
+    </form>
+</div>
+
+{% endblock %}
+
