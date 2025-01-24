@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Store Page{% endblock %}
+{% block content %}
+<div class="container">
+    <h1 class="display-4">Store</h1>
+    <div class="row">
+       <!-- Filter Form -->
+        <div class="col-md-3" style="top: 20px;">
+            <form method="GET" action="{{ url_for('store') }}" class="bg-light p-4 rounded shadow-sm mb-4">
+                <div class="mb-3">
+                    <label for="genre" class="form-label fw-bold">Genre</label>
+                    <select class="form-select" id="genre" name="genre">
+                        <option value="">All Genres</option>
+                        {% for genre in genres %}
+                            <option value="{{ genre }}" {% if genre == selected_genre %}selected{% endif %}>{{ genre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="min_price" class="form-label fw-bold">Min Price</label>
+                    <input type="number" class="form-control" id="min_price" name="min_price" value="{{ min_price }}" step="0.01">
+                </div>
+                <div class="mb-3">
+                    <label for="max_price" class="form-label fw-bold">Max Price</label>
+                    <input type="number" class="form-control" id="max_price" name="max_price" value="{{ max_price }}" step="0.01">
+                </div>
+                <div class="mb-3">
+                    <label for="min_rating" class="form-label fw-bold">Minimum Rating</label>
+                    <select class="form-select" id="min_rating" name="min_rating">
+                        <option value="">All Ratings</option>
+                        <option value="5" {% if min_rating == 5 %}selected{% endif %}>⭐⭐⭐⭐⭐</option>
+                        <option value="4" {% if min_rating == 4 %}selected{% endif %}>⭐⭐⭐⭐ & Above</option>
+                        <option value="3" {% if min_rating == 3 %}selected{% endif %}>⭐⭐⭐ & Above</option>
+                        <option value="2" {% if min_rating == 2 %}selected{% endif %}>⭐⭐ & Above</option>
+                        <option value="1" {% if min_rating == 1 %}selected{% endif %}>⭐ & Above</option>
+                    </select>
+                </div>
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary">Apply Filters</button>
+                    <a href="{{ url_for('store') }}" class="btn btn-secondary">Clear Filters</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Ebooks List -->
+        <div class="col-md-9">
+            <div class="row">
+                {% for ebook in ebooks_list %}
+                <div class="col-md-3 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <!-- Image Container -->
+                        <div style="width: 100%; overflow: hidden;">
+                            {% if ebook.get_image() %}
+                            <img src="{{ url_for('static', filename=ebook.get_image().replace('static/', '')) }}" class="card-img-top" alt="{{ ebook.get_title() }}" style="width: 100%; height: auto; display: block;">
+                            {% else %}
+                            <img src="{{ url_for('static', filename='placeholder.jpg') }}" class="card-img-top" alt="No Image" style="width: 100%; height: auto; display: block;">
+                            {% endif %}
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title text-center fs-6">{{ ebook.get_title() }}</h5>
+                            <p class="card-text text-center text-muted mb-1">{{ ebook.get_author() }}</p>
+                            <p class="card-text text-center text-muted mb-1">{{ ebook.get_genre() }}</p>
+                            <h6 class="card-text text-center mb-1">${{ ebook.get_price() }}</h6>
+                            <!-- Display average rating and total reviews -->
+                            <p class="card-text text-center mb-1">
+                                {% for i in range(ebook.average_rating|int) %}
+                                ⭐
+                                {% endfor %}
+                                {% if ebook.average_rating % 1 >= 0.5 %}
+                                ⭐
+                                {% endif %}
+                            </p>
+                            <p class="text-center card-text mb-1">({{ ebook.total_reviews }} review{% if ebook.total_reviews != 1 %}s{% endif %})</p>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <a href="/productpage/{{ ebook.get_ebook_id() }}" class="btn btn-primary w-100 btn-sm">Details</a>
+                            <a href="/reviews/{{ ebook.get_ebook_id() }}" class="btn btn-secondary w-100 btn-sm mt-2">View Reviews</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

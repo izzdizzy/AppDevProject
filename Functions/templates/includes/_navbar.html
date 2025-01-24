@@ -1,0 +1,69 @@
+<nav class="navbar navbar-expand-sm bg-dark bg-gradient navbar-primary">
+  <div class="container-fluid">
+    <a class="navbar-brand text-white" href="/">Bookstore</a>
+    <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse text-white" id="collapsibleNavbar">
+      <!-- Left-aligned navbar items -->
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link text-white" href="{{ url_for('home') }}">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="/Store">Store</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="/inventory">Inventory</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="/cart">Cart</a>
+        </li>
+
+        <!-- Staff Dropdown (visible only to Staff and Owners) -->
+        {% if 'role' in session and session['role'] in ['Staff', 'Co-owner', 'Owner'] %}
+        <li class="nav-item dropdown">
+         <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
+  Staff
+</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="/createCard">Create Card</a></li>
+             {% if 'role' in session and session['role'] in ['Co-owner', 'Owner'] %}
+            <li><a class="dropdown-item" href="/retrieveCard">Retrieve Cards</a></li>
+              {% endif %}
+            <li><a class="dropdown-item" href="/createEbook">Create Book</a></li>
+
+            <li><a class="dropdown-item" href="/retrieveEbooks">Retrieve Books</a></li>
+             {% if 'role' in session and session['role'] in ['Owner'] %}
+            <li><a class="dropdown-item" href="/create_user">Create Accounts</a></li>
+             {% endif %}
+             {% if 'role' in session and session['role'] in ['Co-owner', 'Owner'] %}
+            <li><a class="dropdown-item" href="/user_management">User Management</a></li>
+             {% endif %}
+
+            <li><a class="dropdown-item" href="/transaction_history">Transaction History</a></li>
+          </ul>
+        </li>
+        {% endif %}
+      </ul>
+
+      <!-- Right-aligned navbar items -->
+      <ul class="navbar-nav ms-auto">
+        {% if 'user_id' not in session %}
+        <!-- Show Login button if user is not logged in -->
+        <li class="nav-item">
+          <a class="nav-link text-white" href="/login">Login</a>
+        </li>
+        {% else %}
+        <!-- Show username and Logout button if user is logged in -->
+        <li class="nav-item">
+          <a class="nav-link text-white" href="#">{{ session.get('username') }}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="/logout">Logout</a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>

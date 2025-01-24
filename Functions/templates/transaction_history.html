@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}Transaction History{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="mt-3">
+        <button onclick="goBack()" class="btn btn-secondary">Back</button>
+    </div>
+    <h1 class="text-center mb-4">Transaction History</h1>
+
+    <!-- Display flashed messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div>
+        {% if transactions|length == 0 %}
+        <p class="text-center">No transactions found.</p>
+        {% else %}
+        <p class="text-center">Total transactions: {{ transactions|length }}</p>
+        {% endif %}
+    </div>
+
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Transaction ID</th>
+                <th>User ID</th>
+                <th>Username</th>
+                <th>Book Title</th>
+                <th>Amount Paid</th>
+                <th>Date</th>
+                <th>Refund Status</th>
+                {% if role in ['Staff', 'Owner', 'Co-owner'] %}
+                <th>Actions</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in transactions %}
+            <tr>
+                <td>{{ transaction.get_transaction_id() }}</td>
+                <td>{{ transaction.get_user_id() }}</td>
+                <td>{{ transaction.get_username() }}</td>
+                <td>{{ transaction.get_title() }}</td>
+                <td>${{ "%.2f"|format(transaction.get_amount_paid()) }}</td>
+                <td>{{ transaction.get_timestamp().strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td>{{ transaction.get_refund_status() }}</td>
+                {% if role in ['Staff', 'Owner', 'Co-owner'] %}
+                <td>
+                    {% if transaction.get_refund_status() == "Not Refunded" %}
+                    <!-- Refund Button with Modal Confirmation -->
+                    <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#refundModal{{ transaction.get_transaction_id() }}">
+                        Refund
+                    </button>
+                    <!-- Modal -->
+                    <div class="modal fade" id="refundModal{{ transaction.get_transaction_id() }}" tabindex="-1" aria-labelledby="refundModalLabel{{ transaction.get_transaction_id() }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="refundModalLabel{{ transaction.get_transaction_id() }}">Refund Confirmation</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure you want to refund "{{ transaction.get_title() }}" for ${{ "%.2f"|format(transaction.get_amount_paid()) }}?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <form action="{{ url_for('process_refund', transaction_id=transaction.get_transaction_id()) }}" method="POST" style="display:inline;">
+                                        <button type="submit" class="btn btn-danger">Confirm Refund</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>
+{% endblock %}

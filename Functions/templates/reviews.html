@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Reviews{% endblock %}
+{% block content %}
+<h1 class="display-4">Reviews</h1>
+{% if not is_empty %}
+    {% for review in reviews_list %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">{{ review.get_reviewer_name() }}</h5>
+            <p class="card-text">
+                {% for i in range(review.get_stars()) %}
+                ⭐
+                {% endfor %}
+            </p>
+            <p class="card-text">{{ review.get_message() }}</p>
+        </div>
+    </div>
+    {% endfor %}
+<a href="{{ url_for('submit_review', id=    id) }}" class="btn btn-primary">Submit a Review</a>
+{% else %}
+    <div class="alert alert-info" role="alert">
+        No reviews yet. <a href="{{ url_for('submit_review',id=id) }}" class="alert-link">Be the first to review this book!</a>
+    </div>
+{% endif %}
+{% endblock %}
