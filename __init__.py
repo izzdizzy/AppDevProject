@@ -70,14 +70,24 @@ def home():
         print("No ebooks found in the database.")
     db.close()
 
-    # Open the reviews database
+    # Open the reviews database (create if it doesn't exist)
     reviews_dict = {}
-    db = shelve.open('reviews.db', 'r')
+    is_empty = True  # Assume there are no reviews by default
     try:
-        reviews_dict = db['Reviews']
-    except KeyError:
-        print("No reviews found in the database.")
-    db.close()
+        db = shelve.open('reviews.db', 'c')
+        try:
+            # Try to retrieve the 'Reviews' dictionary
+            reviews_dict = db.get('Reviews', {})  # Use .get() to avoid KeyError
+            if not reviews_dict:  # If 'Reviews' key doesn't exist or is empty
+                db['Reviews'] = {}  # Initialize an empty dictionary
+                reviews_dict = db['Reviews']
+            is_empty = len(reviews_dict) == 0  # Check if the reviews database is empty
+        except Exception as e:
+            print(f"Error accessing reviews.db: {e}")
+        finally:
+            db.close()
+    except Exception as e:
+        print(f"An error occurred while opening reviews.db: {e}")
 
     # Convert the dictionary values to a list
     ebooks_list = list(ebooks_dict.values())
@@ -103,7 +113,7 @@ def home():
     random_genre = random.choice(list(genres)) if genres else None
     random_genre_books = [ebook for ebook in ebooks_list if ebook.get_genre() == random_genre][:6]
 
-    return render_template('home.html', featured_books=featured_books, random_genre_books=random_genre_books, random_genre=random_genre)
+    return render_template('home.html', featured_books=featured_books, random_genre_books=random_genre_books, random_genre=random_genre, is_empty=is_empty)
 
 @app.route('/promote_user/<int:user_id>/<role>', methods=['POST'])
 @staff_only  # Ensure only staff (owners/co-owners) can access this route
